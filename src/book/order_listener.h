@@ -24,7 +24,7 @@ public:
   virtual void on_fill(const OrderPtr& order, 
                        const OrderPtr& matched_order, 
                        Quantity fill_qty, 
-                       Cost fill_cost) = 0;
+                       Price fill_cost) = 0;
 
   /// @brief callback for an order cancellation
   virtual void on_cancel(const OrderPtr& order) = 0;
