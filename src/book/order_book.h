@@ -195,7 +195,7 @@ protected:
   /// @return the number of units traded (zero if unsuccessful).
   Quantity create_trade(Tracker& inbound_tracker, 
                     Tracker& current_tracker,
-                    Quantity max_quantity = UINT32_MAX);
+                    Quantity max_quantity = QUANTITY_MAX);
 
   /// @brief find an order in a container
   /// @param order is the the order we are looking for
