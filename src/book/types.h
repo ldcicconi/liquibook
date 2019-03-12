@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include <limits>
 #include <stdexcept>
 
 namespace liquibook { namespace book {
