@@ -413,8 +413,8 @@ OrderBook<OrderPtr>::add(const OrderPtr& order, OrderConditions conditions)
       // Note the filled qty in the accept callback
       callbacks_[accept_cb_index].quantity = inbound.filled_qty();
 
-      // Cancel any unfilled IOC order
-      if (inbound.immediate_or_cancel() && !inbound.filled()) 
+      // Cancel any unfilled IOC order or order that encountered a self-trade 
+      if ((inbound.immediate_or_cancel() || inbound.self_trade()) && !inbound.filled()) 
       {
         // NOTE - this may need he actual open qty???
         callbacks_.push_back(TypedCallback::cancel(order, 0));
@@ -630,7 +630,7 @@ OrderBook<OrderPtr>::find_on_market(
 }
 
 // Try to match order.  Generate trades.
-// If not completely filled and not IOC,
+// If not completely filled and not IOC and did not encounter a self-trade,
 // add the order to the order book
 template <class OrderPtr>
 bool
@@ -647,7 +647,7 @@ OrderBook<OrderPtr>::add_order(Tracker& inbound, Price order_price)
   }
 
   // If order has remaining open quantity and is not immediate or cancel
-  if (inbound.open_qty() && !inbound.immediate_or_cancel()) {
+  if (inbound.open_qty() && !inbound.immediate_or_cancel() && !inbound.self_trade()) {
     // If this is a buy order
     if (order->is_buy()) 
     {
@@ -689,6 +689,7 @@ OrderBook<OrderPtr>::check_deferred_aons(DeferredMatches & aons,
     Tracker & tracker = entry->second;
     bool matched = match_order(tracker, current_price.price(), 
       marketTrackers, ignoredAons);
+    // NOTE: need to figure out what to do with tracker.self_trade() here
     result |= matched;
     if(tracker.filled())
     {
@@ -747,8 +748,9 @@ OrderBook<OrderPtr>::match_regular_order(Tracker& inbound,
     // Current price matches inbound price
     Tracker & current_order = entry->second;  
     if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
-      // counterparties are the same -- no match
-      continue;
+      // counterparties are the same -- exit matching
+      inbound.set_self_trade();
+      break;
     }
 
     Quantity current_quantity = current_order.open_qty();
@@ -823,8 +825,9 @@ OrderBook<OrderPtr>::match_aon_order(Tracker& inbound,
     // Current price matches inbound price
     Tracker & current_order = entry->second;
     if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
-      // counterparties are the same -- no match
-      continue;
+      // counterparties are the same -- exit matching
+      inbound.set_self_trade();
+      break;
     }
 
     Quantity current_quantity = current_order.open_qty();

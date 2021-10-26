@@ -37,13 +37,16 @@ public:
   /// @brief get the order pointer
   OrderPtr& ptr();
 
-  /// @ brief is this order marked all or none?
+  /// @brief is this order marked all or none?
   bool all_or_none() const;
 
-  /// @ brief is this order marked immediate or cancel?
+  /// @brief is this order marked immediate or cancel?
   bool immediate_or_cancel() const;
 
-  /// @ get the order's counterparty id
+  /// @brief did this order encounter a self_trade when matching?
+  bool self_trade() const;
+
+  /// @brief get the order's counterparty id
   CounterpartyId counterparty_id() const;
 
   Quantity reserve(int32_t reserved);
@@ -54,6 +57,7 @@ private:
   int32_t reserved_;
   OrderConditions conditions_;
   CounterpartyId counterparty_id_;
+  bool self_trade_;
 };
 
 template <class OrderPtr>
@@ -165,6 +169,20 @@ CounterpartyId
 OrderTracker<OrderPtr>::counterparty_id() const
 {
     return counterparty_id_;
+}
+
+template <class OrderPtr>
+void
+OrderTracker<OrderPtr>::set_self_trade() const
+{
+    self_trade_ = true;
+}
+
+template <class OrderPtr>
+bool
+OrderTracker<OrderPtr>::self_trade() const
+{
+    return self_trade_;
 }
 
 } }
