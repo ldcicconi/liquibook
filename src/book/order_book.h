@@ -747,7 +747,7 @@ OrderBook<OrderPtr>::match_regular_order(Tracker& inbound,
     //////////////////////////////////////
     // Current price matches inbound price
     Tracker & current_order = entry->second;  
-    if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
+    if(counterparty_id != 0 && counterparty_id == current_order.counterparty_id()) {
       // counterparties are the same -- exit matching
       inbound.set_self_trade();
       break;
@@ -824,7 +824,7 @@ OrderBook<OrderPtr>::match_aon_order(Tracker& inbound,
     //////////////////////////////////////
     // Current price matches inbound price
     Tracker & current_order = entry->second;
-    if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
+    if(counterparty_id != 0 && counterparty_id == current_order.counterparty_id()) {
       // counterparties are the same -- exit matching
       inbound.set_self_trade();
       break;

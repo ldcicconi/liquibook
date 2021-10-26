@@ -46,6 +46,9 @@ public:
   /// @brief did this order encounter a self_trade when matching?
   bool self_trade() const;
 
+  /// @brief set self_trade to true on this order
+  void set_self_trade();
+
   /// @brief get the order's counterparty id
   CounterpartyId counterparty_id() const;
 
@@ -173,7 +176,7 @@ OrderTracker<OrderPtr>::counterparty_id() const
 
 template <class OrderPtr>
 void
-OrderTracker<OrderPtr>::set_self_trade() const
+OrderTracker<OrderPtr>::set_self_trade()
 {
     self_trade_ = true;
 }
