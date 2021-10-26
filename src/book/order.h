@@ -36,6 +36,9 @@ public:
   /// @brief After generating as many trades as possible against
   /// orders already on the market, cancel any remaining quantity.
   virtual bool immediate_or_cancel() const;
+
+  /// @brief get the counterparty id of this order, or 0 if not set.
+  virtual CounterpartyId counterparty_id() const = 0;
 };
 
 inline

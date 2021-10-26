@@ -16,6 +16,7 @@ namespace liquibook { namespace book {
   typedef uint64_t FillId;
   typedef uint64_t ChangeId;
   typedef uint64_t OrderConditions;
+  typedef uint64_t CounterpartyId;
 
   enum OrderCondition {
     oc_no_conditions = 0,

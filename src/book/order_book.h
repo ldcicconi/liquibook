@@ -732,6 +732,7 @@ OrderBook<OrderPtr>::match_regular_order(Tracker& inbound,
   bool matched = false;
   Quantity inbound_qty = inbound.open_qty();
   typename TrackerMap::iterator pos = current_orders.begin(); 
+  uint64_t counterparty_id = inbound.counterparty_id();
   while(pos != current_orders.end() && !inbound.filled()) 
   {
     auto entry = pos++;
@@ -744,7 +745,12 @@ OrderBook<OrderPtr>::match_regular_order(Tracker& inbound,
 
     //////////////////////////////////////
     // Current price matches inbound price
-    Tracker & current_order = entry->second;
+    Tracker & current_order = entry->second;  
+    if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
+      // counterparties are the same -- no match
+      continue;
+    }
+
     Quantity current_quantity = current_order.open_qty();
 
     if(current_order.all_or_none())

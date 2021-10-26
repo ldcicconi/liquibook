@@ -43,6 +43,9 @@ public:
   /// @ brief is this order marked immediate or cancel?
   bool immediate_or_cancel() const;
 
+  /// @ get the order's counterparty id
+  CounterpartyId counterparty_id() const;
+
   Quantity reserve(int32_t reserved);
 
 private:
@@ -50,6 +53,7 @@ private:
   Quantity open_qty_;
   int32_t reserved_;
   OrderConditions conditions_;
+  CounterpartyId counterparty_id_;
 };
 
 template <class OrderPtr>
@@ -59,7 +63,8 @@ OrderTracker<OrderPtr>::OrderTracker(
 : order_(order),
   open_qty_(order->order_qty()),
   reserved_(0),
-  conditions_(conditions)
+  conditions_(conditions),
+  counterparty_id_(order->counterparty_id())
 {
 #if defined(LIQUIBOOK_ORDER_KNOWS_CONDITIONS)
   if(order->all_or_none())
@@ -153,6 +158,13 @@ bool
 OrderTracker<OrderPtr>::immediate_or_cancel() const
 {
     return bool((conditions_ & oc_immediate_or_cancel) != 0);
+}
+
+template <class OrderPtr>
+CounterpartyId
+OrderTracker<OrderPtr>::counterparty_id() const
+{
+    return counterparty_id_;
 }
 
 } }
