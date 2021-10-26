@@ -804,6 +804,7 @@ OrderBook<OrderPtr>::match_aon_order(Tracker& inbound,
   bool matched = false;
   Quantity inbound_qty = inbound.open_qty();
   Quantity deferred_qty = 0;
+  CounterpartyId counterparty_id = inbound.counterparty_id();  
 
   DeferredMatches deferred_matches;
 
@@ -821,6 +822,11 @@ OrderBook<OrderPtr>::match_aon_order(Tracker& inbound,
     //////////////////////////////////////
     // Current price matches inbound price
     Tracker & current_order = entry->second;
+    if counterparty_id != 0 && counterparty_id == current_order.counterparty_id() {
+      // counterparties are the same -- no match
+      continue;
+    }
+
     Quantity current_quantity = current_order.open_qty();
 
     if(current_order.all_or_none())
