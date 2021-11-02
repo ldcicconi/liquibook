@@ -693,7 +693,6 @@ OrderBook<OrderPtr>::check_deferred_aons(DeferredMatches & aons,
     Tracker & tracker = entry->second;
     bool matched = match_order(tracker, current_price.price(), 
       marketTrackers, ignoredAons);
-    // NOTE: need to figure out what to do with tracker.self_trade() here
     result |= matched;
     if(tracker.filled())
     {
