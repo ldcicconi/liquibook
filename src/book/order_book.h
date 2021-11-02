@@ -419,6 +419,10 @@ OrderBook<OrderPtr>::add(const OrderPtr& order, OrderConditions conditions)
         // NOTE - this may need he actual open qty???
         callbacks_.push_back(TypedCallback::cancel(order, 0));
       }
+      // If the trade would be a self-trade, return an error
+      if (inbound.self_trade() && inbound.filled_qty() == 0) {
+        callbacks_.push_back(TypedCallback::reject(order, "self trade"));
+      }
     }
     // If adding this order triggered any stops
     // handle those stops now
